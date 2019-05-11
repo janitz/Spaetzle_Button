@@ -1,9 +1,9 @@
-import RPi.GPIO as GPIO #for buzzer event
-import pygame           #mp3 player
-import glob             #reading file paths
-from random import *    #randomly playing the sounds
-import threading        #thread for mp3 player
-
+import RPi.GPIO as GPIO 	#for buzzer event
+import pygame 			#mp3 player
+import glob 			#reading file paths
+from random import * 		#randomly playing the sounds
+import threading 		#thread for mp3 player
+import sys
 
 class playerThread(threading.Thread):
 
@@ -43,6 +43,7 @@ for path in glob.glob("/home/pi/Documents/buzzer/sounds/*.mp3"):
 hitCnt = 0
 lock = threading.Lock()
 
+running = True
 
 thread = playerThread(paths, hitCnt, lock)
 thread.daemon = True
@@ -51,14 +52,21 @@ thread.start()
 
 def gpioEvent(channel):
 	global hitCnt
-	with lock:
-		hitCnt += 1
-	print("cnt: " + str(hitCnt))
+	global running
+	if channel == 4:
+		with lock:
+			hitCnt += 1
+			print("cnt: " + str(hitCnt))
+	elif channel == 21:
+		running = False
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(4, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(21, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.add_event_detect(4, GPIO.FALLING, callback=gpioEvent, bouncetime=300)
+GPIO.add_event_detect(21, GPIO.RISING, callback=gpioEvent, bouncetime=2000)
 
-
-while True:
-	continue
+print("buzzer ready...")
+while running:
+	pass
+print("buzzer done...")
