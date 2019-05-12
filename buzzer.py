@@ -1,8 +1,9 @@
-import RPi.GPIO as GPIO 	#for buzzer event
-import pygame 			#mp3 player
-import glob 			#reading file paths
-from random import * 		#randomly playing the sounds
-import threading 		#thread for mp3 player
+import RPi.GPIO as GPIO #for buzzer event 
+import pygame #mp3 player 
+import glob #reading file paths 
+from random import * #randomly playing the sounds 
+import threading #thread for mp3 player 
+import subprocess
 import sys
 
 class playerThread(threading.Thread):
@@ -29,13 +30,17 @@ class playerThread(threading.Thread):
 			path = self.paths[randint(0, len(paths) - 1)]
 			print(path)
 			pygame.mixer.music.load(path)
-			pygame.mixer.music.set_volume(1.0)
+			pygame.mixer.music.set_volume(0.9)
 			pygame.mixer.music.play()
 			while pygame.mixer.music.get_busy():
 				continue
 			with self.lock:
 				self.lastCnt = hitCnt
 
+#audio route headphone jack
+subprocess.call('amixer cset numid=3 1', shell=True)
+#audio volume
+subprocess.call('amixer cset numid=1 90%', shell=True)
 
 paths=[]
 for path in glob.glob("/home/pi/Documents/buzzer/sounds/*.mp3"):
