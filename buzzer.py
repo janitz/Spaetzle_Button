@@ -43,7 +43,7 @@ subprocess.call('amixer cset numid=3 1', shell=True)
 subprocess.call('amixer cset numid=1 90%', shell=True)
 
 paths=[]
-for path in glob.glob("/home/pi/Documents/buzzer/sounds/*.mp3"):
+for path in glob.glob("sounds/*.mp3"):
 	paths.append(path)
 hitCnt = 0
 lock = threading.Lock()
