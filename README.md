@@ -12,6 +12,7 @@ Raspberry Pi 3 B+ with Raspbian Stretch<br>
 
 for autostart add following line to /etc/rc.local
 ```bash
-python3 /path/to/buzzer.py
+cd /path/to/buzzer/folder
+python3 buzzer.py >> buzzer.log
 ```
 

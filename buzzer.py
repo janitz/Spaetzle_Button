@@ -19,6 +19,7 @@ class playerThread(threading.Thread):
 		pygame.mixer.music.stop()
 
 	def run(self):
+		index = 0
 		while True:
 			play = False
 			with self.lock:
@@ -27,7 +28,11 @@ class playerThread(threading.Thread):
 			if not play:
 				continue
 
-			path = self.paths[randint(0, len(paths) - 1)]
+			#path = self.paths[randint(0, len(paths) - 1)]
+			path = self.paths[index]
+			index += 1
+			if index >= len(self.paths):
+				index = 0
 			print(path)
 			pygame.mixer.music.load(path)
 			pygame.mixer.music.set_volume(0.9)
@@ -45,6 +50,7 @@ subprocess.call('amixer cset numid=1 90%', shell=True)
 paths=[]
 for path in glob.glob("sounds/*.mp3"):
 	paths.append(path)
+paths.sort()
 hitCnt = 0
 lock = threading.Lock()
 
